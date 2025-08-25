@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id              String   @id @default(uuid())
+  name            String
+  email           String   @unique
+  password        String
+  passwordConfirm String
+  role            UserRole @default(USER)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  orders orders[]
+
+  @@index([email])
+}
+
+model products {
+  id          String        @id @default(uuid())
+  name        String
+  description String
+  price       Int
+  slug        String        @unique
+  onStock     Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  OrderItem   order_items[]
+}
+
+model orders {
+  id               String        @id @default(uuid())
+  status           OrderStatus   @default(CREATED)
+  deliveryLocation String
+  createdAt        DateTime      @default(now())
+  items            order_items[]
+  User             users?        @relation(fields: [userId], references: [id])
+  userId           String?
+
+  @@index([status])
+}
+
+model order_items {
+  id        String   @id @default(uuid())
+  quantity  Int
+  Order     orders?  @relation(fields: [orderId], references: [id])
+  orderId   String?
+  product   products @relation(fields: [productId], references: [id])
+  productId String
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  CREATED
+  AWAITING_PAYMENT
+  PAID
+  FULFILLED
+  COMPLETED
+  CANCELED
+  EXPIRED
+  REFUNDED
+}
