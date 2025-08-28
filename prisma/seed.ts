@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { faker } from '@faker-js/faker';
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prismaClient = new PrismaClient({
@@ -13,8 +13,6 @@ const prismaClient = new PrismaClient({
 });
 
 const main = async () => {
-  // const roles = ['USER', 'ADMIN'];
-
   for (let i = 0; i < 60; i++) {
     // Generating fake data for USERS
     const userName = faker.internet.username();
