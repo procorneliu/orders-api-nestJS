@@ -8,12 +8,10 @@ import { VersionController } from './version/version.controller';
 import { DatabaseModule } from './database/database.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
-import { PrismaModule } from 'nestjs-prisma';
 import * as Joi from 'joi';
 
 @Module({
   imports: [
-    PrismaModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,

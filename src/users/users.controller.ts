@@ -1,13 +1,12 @@
-import { Controller, Param, Body, Get, Post, Patch, Delete, UseInterceptors } from '@nestjs/common';
+import { Controller, Param, Body, Get, Post, Patch, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Prisma } from '@prisma/client';
-import { DataLengthInterceptor } from 'src/interceptors/data-length.interceptor';
+import { CreateUsersDto } from './dtos/create-user.dto';
+import { UpdateUsersDto } from './dtos/update-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @UseInterceptors(DataLengthInterceptor)
   @Get()
   findAll() {
     return this.usersService.findAllUser();
@@ -19,13 +18,13 @@ export class UsersController {
   }
 
   @Post()
-  createUser(@Body() createUserDto: Prisma.usersCreateInput) {
-    return this.usersService.createUser(createUserDto);
+  createUser(@Body() createUsersDto: CreateUsersDto) {
+    return this.usersService.createUser(createUsersDto);
   }
 
   @Patch('/:id')
-  updateUser(@Param('id') id: string, @Body() updateUserDto: Prisma.usersUpdateInput) {
-    return this.usersService.updateUser(id, updateUserDto);
+  updateUser(@Param('id') id: string, @Body() updateUsersDto: UpdateUsersDto) {
+    return this.usersService.updateUser(id, updateUsersDto);
   }
 
   @Delete('/:id')
