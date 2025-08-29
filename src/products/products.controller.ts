@@ -1,15 +1,18 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
+import { QueryPaginationDto } from 'src/common/dtos/query-pagination.dto';
+import { PaginateOutput } from 'src/common/utils/pagination.utils';
+import { products } from '@prisma/client';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAllUsers() {
-    return this.productsService.findAllProducts();
+  findAllUsers(@Query() query?: QueryPaginationDto): Promise<PaginateOutput<products>> {
+    return this.productsService.findAllProducts(query);
   }
 
   @Get('/:id')

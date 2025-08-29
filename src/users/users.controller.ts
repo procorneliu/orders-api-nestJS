@@ -1,15 +1,18 @@
-import { Controller, Param, Body, Get, Post, Patch, Delete } from '@nestjs/common';
+import { Controller, Param, Body, Get, Post, Patch, Delete, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dtos/create-user.dto';
 import { UpdateUsersDto } from './dtos/update-user.dto';
+import { QueryPaginationDto } from 'src/common/dtos/query-pagination.dto';
+import { PaginateOutput } from 'src/common/utils/pagination.utils';
+import { users } from '@prisma/client';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  findAll() {
-    return this.usersService.findAllUser();
+  findAll(@Query() query?: QueryPaginationDto): Promise<PaginateOutput<users>> {
+    return this.usersService.findAllUser(query);
   }
 
   @Get('/:id')

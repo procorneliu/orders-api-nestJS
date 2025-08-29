@@ -1,10 +1,10 @@
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { AllExceptionsFilter } from './config/all-exceptions.filter';
-import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { AllExceptionsFilter } from './common/config/all-exceptions.filter';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { PrismaExceptionFilter } from './config/prisma-exception.filter';
+import { PrismaExceptionFilter } from './common/config/prisma-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

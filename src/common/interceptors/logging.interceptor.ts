@@ -15,19 +15,26 @@ export class LoggingInterceptor implements NestInterceptor {
     // adding status: 'success' to any successful responses
     return next.handle().pipe(
       map((data) => {
-        let res: any = {
-          status: 'success',
-          data,
-        };
-
-        if (Array.isArray(data) && data.length) {
-          res = {
+        if (Array.isArray(data.data) && data.data.length) {
+          return {
             status: 'success',
-            results: data.length,
+            ...data,
+          };
+        } else {
+          return {
+            status: 'success',
             data,
           };
         }
-        return res;
+
+        // if (Array.isArray(data) && data.length) {
+        //   res = {
+        //     status: 'success',
+        //     results: data.length,
+        //     data,
+        //   };
+        // }
+        // return res;
       }),
     );
   }

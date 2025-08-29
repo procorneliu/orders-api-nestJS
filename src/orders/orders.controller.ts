@@ -1,15 +1,18 @@
-import { Controller, Body, Param, Get, Post, Patch, Delete } from '@nestjs/common';
+import { Controller, Body, Param, Get, Post, Patch, Delete, Query } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { UpdateOrderDto } from './dtos/update-order.dto';
+import { QueryPaginationDto } from 'src/common/dtos/query-pagination.dto';
+import { PaginateOutput } from 'src/common/utils/pagination.utils';
+import { orders } from '@prisma/client';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Get()
-  findAllOrders() {
-    return this.ordersService.findAllOrders();
+  findAllOrders(@Query() query?: QueryPaginationDto): Promise<PaginateOutput<orders>> {
+    return this.ordersService.findAllOrders(query);
   }
 
   @Get('/:id')

@@ -1,18 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { UpdateOrderDto } from './dtos/update-order.dto';
 import { DatabaseService } from 'src/database/database.service';
+import { QueryPaginationDto } from 'src/common/dtos/query-pagination.dto';
+import { PaginateOutput, paginateOutput, paginate } from 'src/common/utils/pagination.utils';
+import { orders } from '@prisma/client';
 
 @Injectable()
 export class OrdersService {
   constructor(private databaseService: DatabaseService) {}
 
-  async findAllOrders() {
-    const orders = await this.databaseService.orders.findMany({ take: 10 });
-
-    if (orders.length) return orders;
-
-    throw new NotFoundException('Orders not found');
+  async findAllOrders(query?: QueryPaginationDto): Promise<PaginateOutput<orders>> {
+    const [data, total] = await Promise.all([
+      await this.databaseService.orders.findMany({
+        ...paginate(query!),
+      }),
+      await this.databaseService.orders.count(),
+    ]);
+    return paginateOutput<orders>(data, total, query!);
   }
 
   async findOrder(id: string) {
