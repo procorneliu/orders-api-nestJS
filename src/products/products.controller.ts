@@ -11,7 +11,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAllUsers(@Query() query?: QueryPaginationDto): Promise<PaginateOutput<products>> {
+  findAllProducts(@Query() query?: QueryPaginationDto): Promise<PaginateOutput<products>> {
     return this.productsService.findAllProducts(query);
   }
 
