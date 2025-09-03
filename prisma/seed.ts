@@ -7,7 +7,6 @@ const prismaClient = new PrismaClient({
   omit: {
     users: {
       password: true,
-      passwordConfirm: true,
     },
   },
 });
@@ -37,7 +36,6 @@ const main = async () => {
           name: userName,
           email: userEmail,
           password: userPassword,
-          passwordConfirm: userPassword,
         },
       });
       const product = await tx.products.create({

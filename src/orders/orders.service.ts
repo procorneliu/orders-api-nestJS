@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { UpdateOrderDto } from './dtos/update-order.dto';
-import { DatabaseService } from 'src/database/database.service';
-import { QueryPaginationDto } from 'src/common/dtos/query-pagination.dto';
-import { PaginateOutput, paginateOutput, paginate } from 'src/common/utils/pagination.utils';
+import { DatabaseService } from '../database/database.service';
+import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
+import { PaginateOutput, paginateOutput, paginate } from '../common/utils/pagination.utils';
 import { orders } from '@prisma/client';
 
 @Injectable()

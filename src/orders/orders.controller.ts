@@ -2,8 +2,8 @@ import { Controller, Body, Param, Get, Post, Patch, Delete, Query } from '@nestj
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { UpdateOrderDto } from './dtos/update-order.dto';
-import { QueryPaginationDto } from 'src/common/dtos/query-pagination.dto';
-import { PaginateOutput } from 'src/common/utils/pagination.utils';
+import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
+import { PaginateOutput } from '../common/utils/pagination.utils';
 import { orders } from '@prisma/client';
 
 @Controller('orders')
