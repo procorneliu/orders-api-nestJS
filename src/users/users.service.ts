@@ -39,8 +39,12 @@ export class UsersService {
   }
 
   async createUser(createUsersDto: CreateUsersDto) {
+    // here extraxting passwordConfirm, because it's only used for validation
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordConfirm, ...data } = createUsersDto;
+
     return await this.databaseService.users.create({
-      data: createUsersDto,
+      data,
       omit: {
         password: true,
       },
