@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { UpdateOrderDto } from './dtos/update-order.dto';
 import { DatabaseService } from '../database/database.service';
@@ -24,6 +24,8 @@ export class OrdersService {
     const order = await this.databaseService.orders.findUnique({ where: { id } });
 
     if (order) return order;
+
+    throw new NotFoundException('Order not found');
   }
 
   async createOrder(createOrderDto: CreateOrderDto) {
@@ -31,10 +33,23 @@ export class OrdersService {
   }
 
   async updateOrder(id: string, updateOrderDto: UpdateOrderDto) {
-    return await this.databaseService.orders.update({ where: { id }, data: updateOrderDto });
+    const order = await this.databaseService.orders.update({ where: { id }, data: updateOrderDto });
+
+    if (order) return order;
+
+    throw new NotFoundException('Order not found');
   }
 
   async deleteOrder(id: string) {
-    await this.databaseService.orders.delete({ where: { id } });
+    try {
+      await this.databaseService.orders.delete({ where: { id } });
+
+      return null;
+    } catch (err) {
+      if (err.code === 'P2025') {
+        throw new NotFoundException('Order not found');
+      }
+      throw err;
+    }
   }
 }
