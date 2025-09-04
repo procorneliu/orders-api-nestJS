@@ -52,17 +52,13 @@ describe('ProductsController (e2e)', () => {
 
   it('POST /products -> GET /products/:id -> DELETE /products/:id', async () => {
     const createdProduct = await createProduct();
+    const productId = createdProduct.body.data?.id ?? createdProduct.body.id;
 
-    const getProduct = await http()
-      .get(`/products/${createdProduct.body.data?.id ?? createdProduct.body.id}`)
-      .expect(200);
+    const getProduct = await http().get(`/products/${productId}`).expect(200);
     const product = getProduct.body.data ?? getProduct.body;
 
     expect(product).toMatchObject({
-      name: `some new book here`,
-      description: 'Test book',
-      price: 1,
-      onStock: true,
+      ...createProductDto,
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
     });

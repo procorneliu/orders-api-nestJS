@@ -50,10 +50,9 @@ describe('UsersController (e2e)', () => {
 
   it('POST /users -> GET /users/:id -> DELETE /users/:id', async () => {
     const createdUser = await createUser();
+    const userId = createdUser.body.data?.id ?? createdUser.body.id;
 
-    const getUser = await http()
-      .get(`/users/${createdUser.body.data?.id ?? createdUser.body.id}`)
-      .expect(200);
+    const getUser = await http().get(`/users/${userId}`).expect(200);
 
     const user = getUser.body.data ?? getUser.body;
     expect(user).toMatchObject({
