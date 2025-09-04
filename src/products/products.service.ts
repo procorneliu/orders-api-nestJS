@@ -25,7 +25,7 @@ export class ProductsService {
 
     if (product) return product;
 
-    throw new NotFoundException('Product not found ');
+    throw new NotFoundException('Product not found');
   }
 
   async createProduct(createProductDto: CreateProductDto): Promise<products> {
@@ -35,11 +35,16 @@ export class ProductsService {
   }
 
   async updateProduct(id: string, updateproductDto: UpdateProductDto): Promise<products> {
-    const product = await this.databaseService.products.update({ data: updateproductDto, where: { id } });
+    try {
+      const product = await this.databaseService.products.update({ data: updateproductDto, where: { id } });
 
-    if (product) return product;
-
-    throw new NotFoundException('Product not found');
+      return product;
+    } catch (err) {
+      if (err.code === 'P2025') {
+        throw new NotFoundException('Product not found');
+      }
+      throw err;
+    }
   }
 
   async deleteProduct(id: string): Promise<null> {
@@ -48,7 +53,7 @@ export class ProductsService {
       return null;
     } catch (err) {
       if (err.code === 'P2025') {
-        throw new NotFoundException('User not found');
+        throw new NotFoundException('Product not found');
       }
       throw err;
     }

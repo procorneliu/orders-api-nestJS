@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
-import { ValidationPipe } from '@nestjs/common';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication<App>;
@@ -38,7 +37,7 @@ describe('UsersController (e2e)', () => {
     await app.close();
   });
 
-  it('GET /users returns a list of users', () => {
+  it('GET /users returns a list of users + meta data', () => {
     return http()
       .get('/users')
       .expect(200)
@@ -49,7 +48,7 @@ describe('UsersController (e2e)', () => {
       });
   });
 
-  it('POST /users -> GET /users/:id -> /users/:id (DELETE)', async () => {
+  it('POST /users -> GET /users/:id -> DELETE /users/:id', async () => {
     const createdUser = await createUser();
 
     const getUser = await http()
@@ -75,8 +74,8 @@ describe('UsersController (e2e)', () => {
     const { body } = await createUser();
     const userId = body.data?.id ?? body.id;
 
-    const path = await http().patch(`/users/${userId}`).send(toUpdate).expect(200).expect('Content-Type', /json/);
-    const updatedUser = path.body.data ?? path.body;
+    const patch = await http().patch(`/users/${userId}`).send(toUpdate).expect(200).expect('Content-Type', /json/);
+    const updatedUser = patch.body.data ?? patch.body;
 
     expect(updatedUser.name).toBe(toUpdate.name);
     expect(new Date(updatedUser.updatedAt).getTime()).toBeGreaterThan(new Date(updatedUser.createdAt).getTime());
@@ -89,7 +88,7 @@ describe('UsersController (e2e)', () => {
     expect(res.body.message).toBe('User not found');
   });
 
-  it('PATH /users/:id returns 404 for missing user', async () => {
+  it('PATCH /users/:id returns 404 for missing user', async () => {
     const res = await http().patch('/users/fakeId').send({ name: 'x' }).expect(404).expect('Content-Type', /json/);
     expect(res.body.message).toBe('User not found');
   });

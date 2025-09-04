@@ -33,11 +33,16 @@ export class OrdersService {
   }
 
   async updateOrder(id: string, updateOrderDto: UpdateOrderDto) {
-    const order = await this.databaseService.orders.update({ where: { id }, data: updateOrderDto });
+    try {
+      const order = await this.databaseService.orders.update({ where: { id }, data: updateOrderDto });
 
-    if (order) return order;
-
-    throw new NotFoundException('Order not found');
+      return order;
+    } catch (err) {
+      if (err.code === 'P2025') {
+        throw new NotFoundException('Order not found');
+      }
+      throw err;
+    }
   }
 
   async deleteOrder(id: string) {
