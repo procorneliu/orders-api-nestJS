@@ -1,11 +1,13 @@
-import { Controller, Param, Body, Get, Post, Patch, Delete, Query, HttpCode } from '@nestjs/common';
+import { Controller, Param, Body, Get, Post, Patch, Delete, Query, HttpCode, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dtos/create-user.dto';
 import { UpdateUsersDto } from './dtos/update-user.dto';
 import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
 import { PaginateOutput } from '../common/utils/pagination.utils';
 import { UsersPublic } from './users.service';
+// import { AuthGuard } from 'src/auth/auth.guard';
 
+// @UseGuards(AuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}

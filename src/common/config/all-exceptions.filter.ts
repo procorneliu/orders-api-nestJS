@@ -12,11 +12,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const message =
       exception instanceof HttpException ? (exception.getResponse() as any).message : 'Internal server error';
 
+    // const stack = (exception as any).stack ?? undefined;
+
     response.status(status).json({
       statusCode: status,
       message,
       timestamp: new Date().toISOString(),
       path: request.url,
+      // stack,
     });
   }
 }

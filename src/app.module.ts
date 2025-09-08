@@ -8,6 +8,7 @@ import { VersionController } from './version/version.controller';
 import { DatabaseModule } from './database/database.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
+import { AuthModule } from './auth/auth.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -25,6 +26,7 @@ import * as Joi from 'joi';
     UsersModule,
     ProductsModule,
     OrdersModule,
+    AuthModule,
   ],
   controllers: [AppController, HealthController, VersionController],
   providers: [AppService],

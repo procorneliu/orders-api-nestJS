@@ -5,8 +5,9 @@ import { CreateUsersDto } from './dtos/create-user.dto';
 import { UpdateUsersDto } from './dtos/update-user.dto';
 import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
 import { PaginateOutput, paginateOutput, paginate } from '../common/utils/pagination.utils';
+import bcrypt from 'bcryptjs';
 
-export type UsersPublic = Omit<users, 'password'>;
+export type UsersPublic = Omit<users, 'password'> & Partial<Pick<users, 'password'>>;
 
 @Injectable()
 export class UsersService {
@@ -25,13 +26,22 @@ export class UsersService {
     return paginateOutput<UsersPublic>(data, total, query!);
   }
 
-  async findUser(id: string): Promise<UsersPublic | null> {
+  async findUser(id: string, options = {}): Promise<UsersPublic> {
     const user = await this.databaseService.users.findUnique({
       where: { id },
       omit: {
         password: true,
       },
+      ...options,
     });
+
+    if (user) return user;
+
+    throw new NotFoundException('User not found');
+  }
+
+  async findUserByEmail(email: string) {
+    const user = await this.databaseService.users.findUnique({ where: { email } });
 
     if (user) return user;
 
@@ -42,6 +52,8 @@ export class UsersService {
     // here extraxting passwordConfirm, because it's only used for validation
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordConfirm, ...data } = createUsersDto;
+
+    data.password = await bcrypt.hash(data.password, 12);
 
     return await this.databaseService.users.create({
       data,
