@@ -7,7 +7,7 @@ import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
 import { PaginateOutput, paginateOutput, paginate } from '../common/utils/pagination.utils';
 import bcrypt from 'bcryptjs';
 
-export type UsersPublic = Omit<users, 'password'> & Partial<Pick<users, 'password'>>;
+export type UsersPublic = (Omit<users, 'password'> & Partial<Pick<users, 'password'>>) | null;
 
 @Injectable()
 export class UsersService {
@@ -47,7 +47,7 @@ export class UsersService {
   }
 
   async createUser(createUsersDto: CreateUsersDto) {
-    // here extraxting passwordConfirm, because it's only used for validation
+    // here extracting passwordConfirm, because it's only used for validation
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordConfirm, ...data } = createUsersDto;
 

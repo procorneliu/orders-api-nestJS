@@ -5,12 +5,12 @@ import { UpdateUsersDto } from './dtos/update-user.dto';
 import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
 import { PaginateOutput } from '../common/utils/pagination.utils';
 import { UsersPublic } from './users.service';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
+// import { RolesGuard } from 'src/auth/guards/roles.guard';
+// import { Roles } from 'src/auth/roles/roles.decorator';
+// import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
-@Roles('ADMIN')
-@UseGuards(JwtGuard, RolesGuard)
+// @Roles('ADMIN')
+// @UseGuards(JwtGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}

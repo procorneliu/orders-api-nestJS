@@ -1,36 +1,40 @@
-import { Controller, Post, Get, Body, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, UseGuards, ForbiddenException, HttpCode, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { CreateUsersDto } from '../users/dtos/create-user.dto';
+import { AuthDto } from './dtos/auth.dto';
+import { AccessTokenGuard } from './guards/accessToken.guard';
 import type { Request, Response } from 'express';
-import { CreateUsersDto } from 'src/users/dtos/create-user.dto';
-import { AuthPayloadDto } from './dto/auth-payload.dto';
-import { JwtGuard } from './guards/jwt.guard';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @Post('/signup')
-  signup(@Body() createUsersDto: CreateUsersDto) {
-    return this.authService.signUp(createUsersDto);
+  @Post('signup')
+  signUp(@Body() createUsersDto: CreateUsersDto, @Res({ passthrough: true }) res: Response) {
+    return this.authService.signUp(createUsersDto, res);
   }
 
-  @Post('/signin')
-  signIn(@Body() authPayloadDto: AuthPayloadDto, @Res({ passthrough: true }) response: Response) {
-    return this.authService.signIn(authPayloadDto, response);
+  @HttpCode(200)
+  @Post('signin')
+  signIn(@Body() authDto: AuthDto, @Res({ passthrough: true }) res: Response) {
+    return this.authService.signIn(authDto, res);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(AccessTokenGuard)
   @Get('/logout')
-  async logout(@Req() req: Request, @Res({ passthrough: true }) response: Response) {
-    return this.authService.logout(req.user?.['sub'], response);
+  logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    return this.authService.logout(req.user!['sub'], res);
   }
 
   @UseGuards(RefreshTokenGuard)
   @Get('/refresh')
-  refreshToken(@Req() req: Request) {
-    const userId = req.user?.['sub'];
-    const refreshToken = req.user?.['refresh_token'];
-    return this.authService.refreshTokens(userId, refreshToken);
+  refresh(@Req() req: Request) {
+    if (!req.user) throw new ForbiddenException('Access denied');
+
+    const email = req.user['email'];
+    const refreshToken = req.user['refreshToken'];
+
+    return this.authService.refreshTokens(email, refreshToken);
   }
 }
