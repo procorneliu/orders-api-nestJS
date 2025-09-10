@@ -5,6 +5,7 @@ import { AllExceptionsFilter } from './common/config/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { PrismaExceptionFilter } from './common/config/prisma-exception.filter';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,6 +33,8 @@ async function bootstrap() {
 
   // global interceptor to format response
   app.useGlobalInterceptors(new LoggingInterceptor());
+
+  app.use(cookieParser());
 
   await app.listen(process.env.PORT ?? 3000);
 }
