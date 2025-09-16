@@ -6,9 +6,14 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { PrismaExceptionFilter } from './common/config/prisma-exception.filter';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
+
+  app.use(helmet());
+
+  app.use(cookieParser());
 
   const config = new DocumentBuilder()
     .setTitle('Orders API')
@@ -33,8 +38,6 @@ async function bootstrap() {
 
   // global interceptor to format response
   app.useGlobalInterceptors(new LoggingInterceptor());
-
-  app.use(cookieParser());
 
   await app.listen(process.env.PORT ?? 3000);
 }

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { UsersModule } from './users/users.module';
 import { HealthController } from './health/health.controller';
 import { VersionController } from './version/version.controller';
@@ -21,6 +22,14 @@ import * as Joi from 'joi';
         PORT: Joi.number().port().default(3000),
         DATABASE_URL: Joi.string().uri().required(),
       }),
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ],
     }),
     DatabaseModule,
     UsersModule,

@@ -26,13 +26,10 @@ export class UsersService {
     return paginateOutput<UsersPublic>(data, total, query!);
   }
 
-  async findUser(id: string, options = {}): Promise<UsersPublic> {
+  async findUser(id: string, omitPassword = { password: true }): Promise<UsersPublic> {
     const user = await this.databaseService.users.findUnique({
       where: { id },
-      omit: {
-        password: true,
-      },
-      ...options,
+      omit: omitPassword,
     });
 
     if (user) return user;

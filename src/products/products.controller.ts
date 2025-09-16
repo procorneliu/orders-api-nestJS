@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, Query, HttpCode, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
 import { PaginateOutput } from '../common/utils/pagination.utils';
 import { products } from '@prisma/client';
+import { AccessTokenGuard } from '../auth/guards/accessToken.guard';
 
+@UseGuards(AccessTokenGuard)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

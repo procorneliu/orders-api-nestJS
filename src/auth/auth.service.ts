@@ -26,7 +26,10 @@ export class AuthService {
 
     res.cookie('accessToken', tokens.accessToken);
 
-    return tokens;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { refresh_token, ...userData } = newUser;
+
+    return { userData, tokens };
   }
 
   async signIn(authDto: AuthDto, res: Response) {
@@ -41,12 +44,20 @@ export class AuthService {
 
     res.cookie('accessToken', tokens.accessToken);
 
-    return tokens;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, refresh_token, ...userData } = user;
+
+    return {
+      userData,
+      tokens,
+    };
   }
 
   async logout(id: string, res: Response) {
+    const user = await this.usersService.updateUser(id, { refresh_token: null });
     res.clearCookie('accessToken');
-    return await this.usersService.updateUser(id, { refresh_token: null });
+
+    return user;
   }
 
   async updateRefreshToken(id: string, refreshToken: string) {
