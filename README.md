@@ -39,3 +39,15 @@ After everything is set up and NestJS app and PostreSQL database is running, you
 For this, just run command bellow:
 
 - `npm run seed`
+
+---
+
+## How to import & run the collection
+
+1. Open Postman
+2. Top-left corner --> **Workspaces** --> choose a workspace
+3. Top-left corner (near Workspaces button) --> **Import**
+4. Drag and drop **/docs/collections/orders-api.postman_collection.json**
+5. Repeat process dragging **/docs/collections/env.dev.template.json** _(for environment variables)_
+
+For those interested, there is also an OpenApi json for Swagger in **/docs/openapi.json**.

@@ -1,7 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiSuccessResponse } from 'src/common/decorators/api-success-response.decorator';
+import { HealthDto } from './dtos/health.dto';
 
 @Controller('health')
 export class HealthController {
+  @ApiSuccessResponse(HealthDto)
   @Get()
   health() {
     return {
