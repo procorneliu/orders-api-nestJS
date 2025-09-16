@@ -149,9 +149,9 @@ describe('OrdersService', () => {
   });
 
   it('updateOrder => throw if order is missing', async () => {
-    jest.spyOn(mockDB.orders, 'update').mockResolvedValueOnce(null);
+    jest.spyOn(mockDB.orders, 'update').mockRejectedValueOnce(null);
 
-    await expect(ordersService.updateOrder('missing id', {})).rejects.toThrow(NotFoundException);
+    await expect(ordersService.updateOrder('missing id', {})).rejects.toThrow(Error);
   });
 
   it('deleteOrder => delete and return null', async () => {

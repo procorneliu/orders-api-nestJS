@@ -81,11 +81,11 @@ describe('UsersController', () => {
     jest.spyOn(mockUserService, 'findUser').mockResolvedValue(user);
 
     // act
-    const result = await controller.findOne(id);
+    const result = await controller.findOne(id, { password: true });
 
     // assert
     expect(mockUserService.findUser).toHaveBeenCalledTimes(1);
-    expect(mockUserService.findUser).toHaveBeenCalledWith(id);
+    expect(mockUserService.findUser).toHaveBeenCalledWith(id, { password: true });
 
     expect(result).toEqual(user);
   });

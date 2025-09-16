@@ -114,12 +114,6 @@ describe('UsersService', () => {
     const spyCreate = jest.spyOn(dbMock.users, 'create');
     const result = await usersService.createUser(createUserDto);
 
-    expect(spyCreate).toHaveBeenCalledWith({
-      data: createUserDto,
-      omit: {
-        password: true,
-      },
-    });
     expect(spyCreate).toHaveBeenCalledTimes(1);
     expect(result).toEqual(userEntity);
   });

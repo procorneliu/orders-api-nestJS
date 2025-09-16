@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiSuccessResponse } from 'src/common/decorators/api-success-response.decorator';
+import { ApiSuccessResponse } from '../common/decorators/api-success-response.decorator';
 import { HealthDto } from './dtos/health.dto';
 
 @Controller('health')
