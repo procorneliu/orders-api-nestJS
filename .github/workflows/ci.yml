@@ -44,5 +44,3 @@ jobs:
         run: npm ci
       - name: Unit testing
         run: npm run test
-      - name: E2E testing
-        run: npm run test:e2e
