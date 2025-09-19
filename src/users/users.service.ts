@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { users } from '@prisma/client';
 import { CreateUsersDto } from './dtos/create-user.dto';
@@ -6,12 +6,16 @@ import { UpdateUsersDto } from './dtos/update-user.dto';
 import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
 import { PaginateOutput, paginateOutput, paginate } from '../common/utils/pagination.utils';
 import bcrypt from 'bcryptjs';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 export type UsersPublic = (Omit<users, 'password'> & Partial<Pick<users, 'password'>>) | null;
 
 @Injectable()
 export class UsersService {
-  constructor(private databaseService: DatabaseService) {}
+  constructor(
+    private databaseService: DatabaseService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async findAllUser(query?: QueryPaginationDto): Promise<PaginateOutput<UsersPublic>> {
     const [data, total] = await Promise.all([
@@ -68,6 +72,9 @@ export class UsersService {
         },
       });
 
+      // Cache invalidation, lazy reload
+      await this.cacheManager.del(`/users/${id}`);
+
       return updatedUser;
     } catch (err) {
       if (err.code === 'P2025') {
@@ -80,6 +87,9 @@ export class UsersService {
   async deleteUser(id: string) {
     try {
       await this.databaseService.users.delete({ where: { id } });
+
+      // Cache invalidation, lazy reload
+      await this.cacheManager.del(`/users/${id}`);
 
       return null;
     } catch (err) {

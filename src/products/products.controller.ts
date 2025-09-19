@@ -1,15 +1,17 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body, Query, HttpCode, UseGuards } from '@nestjs/common';
-import { ProductsService } from './products.service';
-import { CreateProductDto } from './dtos/create-product.dto';
-import { UpdateProductDto } from './dtos/update-product.dto';
-import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
-import { PaginateOutput } from '../common/utils/pagination.utils';
-import { products } from '@prisma/client';
-import { AccessTokenGuard } from '../auth/guards/accessToken.guard';
-import { ApiSuccessResponse } from '../common/decorators/api-success-response.decorator';
-import { ProductResponseDto } from './dtos/product-response.dto';
 import { ApiResponse } from '@nestjs/swagger';
 
+import { products } from '@prisma/client';
+
+import { ProductsService } from './products.service';
+import { PaginateOutput } from '../common/utils/pagination.utils';
+import { ApiSuccessResponse } from '../common/decorators/api-success-response.decorator';
+import { AccessTokenGuard } from '../auth/guards/accessToken.guard';
+import { CreateProductDto, UpdateProductDto, ProductResponseDto } from './dtos';
+import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
+import { CacheKey } from '@nestjs/cache-manager';
+
+@CacheKey('products')
 @UseGuards(AccessTokenGuard)
 @Controller('products')
 export class ProductsController {
@@ -23,8 +25,10 @@ export class ProductsController {
 
   @ApiSuccessResponse(ProductResponseDto)
   @Get('/:id')
-  findProduct(@Param('id') id: string) {
-    return this.productsService.findProduct(id);
+  async findProduct(@Param('id') id: string) {
+    const product = await this.productsService.findProduct(id);
+
+    return product;
   }
 
   @ApiSuccessResponse(ProductResponseDto)

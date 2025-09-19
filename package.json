@@ -23,6 +23,8 @@
     "test:e2e:watch": "jest --config ./test/jest-e2e.json --watch --runInBand --detectOpenHandles --logHeapUsage"
   },
   "dependencies": {
+    "@keyv/redis": "^5.1.2",
+    "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -34,6 +36,7 @@
     "@nestjs/throttler": "^6.4.0",
     "@prisma/client": "^6.15.0",
     "bcryptjs": "^3.0.2",
+    "cache-manager": "^7.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
@@ -52,6 +55,7 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/cache-manager": "^4.0.6",
     "@types/cookie-parser": "^1.4.9",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",

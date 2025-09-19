@@ -1,14 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { UpdateOrderDto } from './dtos/update-order.dto';
 import { DatabaseService } from '../database/database.service';
 import { QueryPaginationDto } from '../common/dtos/query-pagination.dto';
 import { PaginateOutput, paginateOutput, paginate } from '../common/utils/pagination.utils';
 import { orders } from '@prisma/client';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class OrdersService {
-  constructor(private databaseService: DatabaseService) {}
+  constructor(
+    private databaseService: DatabaseService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async findAllOrders(query?: QueryPaginationDto): Promise<PaginateOutput<orders>> {
     const [data, total] = await Promise.all([
@@ -36,6 +40,9 @@ export class OrdersService {
     try {
       const order = await this.databaseService.orders.update({ where: { id }, data: updateOrderDto });
 
+      // Cache invalidation, lazy reload
+      await this.cacheManager.del(`/orders/${id}`);
+
       return order;
     } catch (err) {
       if (err.code === 'P2025') {
@@ -48,6 +55,9 @@ export class OrdersService {
   async deleteOrder(id: string) {
     try {
       await this.databaseService.orders.delete({ where: { id } });
+
+      // Cache invalidation, lazy reload
+      await this.cacheManager.del(`/orders/${id}`);
 
       return null;
     } catch (err) {
